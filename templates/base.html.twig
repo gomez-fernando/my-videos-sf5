@@ -1,12 +1,40 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<!doctype html>
+<html lang="es">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <style>
+        .form-control {
+            background-color: #f8f5f5;
+        }
+    </style>
+
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+
+    <title>My Videos | Video sharing service</title>
+
+</head>
+
+<body class="text-center">
+<div class="container-fluid">
+
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{{ asset('assets/js/jquery.js') }}"></script>
+<script src="{{ asset('assets/js/popper.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.js') }}"></script>
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
 </html>
