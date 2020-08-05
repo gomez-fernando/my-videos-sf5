@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+{#    <!-- Bootstrap CSS -->#}
+{#    <link rel="stylesheet" href="assets/css/styles.css">#}
 
     <style>
         .form-control {
@@ -16,7 +16,9 @@
     </style>
 
     <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
+    {% endblock %}
 
     <title>{% block title %}My Videos | Video sharing service{% endblock %}</title>
 
@@ -40,7 +42,7 @@
                 <a class="p-2 text-dark" href="{{ path('video_list') }}">Unbelievable</a>
                 <a class="p-2 text-dark" href="{{ path('video_list') }}">Inspirational</a>
                 <a class="p-2 text-dark" href="{{ path('video_list') }}">Motivating</a>
-                <a class="p-2 text-dark" href="admin/my_profile.php">My account</a>
+                <a class="p-2 text-dark" href="{{ path('admin_main_page') }}">My account</a>
             </nav>
             <a class="btn btn-outline-primary mr-2" href="{{ path('pricing') }}">Sign up</a>
             <a class="btn btn-outline-primary" href="{{ path('login') }}">Sign in</a>
