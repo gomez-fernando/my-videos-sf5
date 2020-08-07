@@ -1,5 +1,5 @@
-{% extends 'base.html.twig' %}
-{% block main %}
+{% extends 'admin/base.html.twig' %}
+{% block mainadmin %}
 
 <h2>Videos / My liked videos</h2>
 
@@ -15,9 +15,9 @@
       </tr>
     </thead>
     <tbody>
-        <?php foreach(range(1,10) as $v): ?>
+        {% for i in 1..10 %}
       <tr>
-        <td><?=$v?></td>
+        <td>{{ i }}</td>
         <td>Video name</td>
         <td><a target="_blank" href="http://vimeo.com">go to video</a></td>
         <td>
@@ -34,21 +34,24 @@
         </td>
         <td><a href="#" onclick="delete_video(event,2);"><i class="fas fa-trash"></i></a></td>
       </tr>
-        <?php endforeach; ?>
+        {% endfor %}
     </tbody>
   </table>
 </div>
 
-<script>
-    function delete_video(e,video_id)
-    {
-        e.preventDefault();
-        if(confirm('Are you sure?')) 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function delete_video(e,video_id)
         {
-            console.log(id);
-            // delete video from vimeo
-            // window.location.href = 'clear database record with Symfony';
+            e.preventDefault();
+            if(confirm('Are you sure?'))
+            {
+                console.log(id);
+                // delete video from vimeo
+                // window.location.href = 'clear database record with Symfony';
+            }
         }
-    }
-</script>
+    </script>
+{% endblock %}
 {% endblock %}
