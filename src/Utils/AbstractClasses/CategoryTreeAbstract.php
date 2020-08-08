@@ -17,6 +17,22 @@ abstract class CategoryTreeAbstract {
 
     abstract public function getCategoryList(array $categories_array);
 
+    public function buildTree(int $parent_id = null): array {
+        $subCategory = [];
+
+        foreach ($this->categoriesArrayFromDb as $category){
+            if($category['parent_id'] == $parent_id){
+                $children = $this->buildTree($category['id']);
+                if($children){
+                    $category['children'] = $children;
+                }
+
+                $subCategory[] = $category;
+            }
+        }
+        return $subCategory;
+    }
+
     private function getCategories(): array {
         if(self::$dbconnection){
             return self::$dbconnection;
