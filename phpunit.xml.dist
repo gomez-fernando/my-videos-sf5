@@ -13,6 +13,7 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />
+        <server name="DATABASE_URL" value="mysql://fernando:fernando@127.0.0.1:3306/my_videos?serverVersion=5.7 " />
     </php>
 
     <testsuites>
