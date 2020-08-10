@@ -19,6 +19,17 @@ class VideoRepository extends ServiceEntityRepository
         parent::__construct($registry, Video::class);
     }
 
+    public function findByChildIds(array $value, ?string $sort_method)
+    {
+        $sort_method = $sort_method != 'rating' ? $sort_method : 'ASC';
+        $dbquery = $this->createQueryBuilder('v')
+            ->andWhere('v.category IN (:val)')
+            ->setParameter('val', $value)
+            ->orderBy('v.title', $sort_method)
+            ->getQuery();
+        return $dbquery->getResult();
+    }
+
     // /**
     //  * @return Video[] Returns an array of Video objects
     //  */
