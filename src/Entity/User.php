@@ -9,13 +9,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\Table(name="users")
+ * @UniqueEntity("email")
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
 {
     /**
-     * @ORM\Table(name="users")
-     * @UniqueEntity("email")
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -36,17 +36,21 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
+     * @Assert\NotBlank(message="Please enter a valid password")
+     * @Assert\Length(max="4096")
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=45)
+     * @Assert\NotBlank(message="Valid first name is required")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=45)
+     * @Assert\NotBlank(message="Valid first name is required")
      */
     private $last_name;
 

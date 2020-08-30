@@ -6,8 +6,10 @@ use App\Entity\Video;
 use App\Utils\CategoryTreeFrontPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Category;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class FrontController extends AbstractController
 {
@@ -24,7 +26,7 @@ class FrontController extends AbstractController
      * @param $id
      * @param CategoryTreeFrontPage $categories
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function videoList($id, CategoryTreeFrontPage $categories, Request $request)
     {
@@ -86,10 +88,24 @@ class FrontController extends AbstractController
 
     /**
      * @Route("/login", name="login")
+     * @param AuthenticationUtils $helper
+     * @return Response
      */
-    public function login()
+    public function login(AuthenticationUtils $helper)
     {
-        return $this->render('front/login.html.twig');
+        return $this->render('front/login.html.twig', [
+            'error' => $helper->getLastAuthenticationError()
+        ]);
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     * @return void
+     * @throws \Exception
+     */
+    public function logout(): void
+    {
+        throw new \Exception('This should never be reached!');
     }
 
     /**
