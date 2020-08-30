@@ -14,23 +14,20 @@ class CategoryTest extends KernelTestCase
     protected function setUp()
     {
         $kernel = self::bootKernel();
-        $urlGenerator = $kernel->getContainer()->get('router');
-
+        $urlgenerator = $kernel->getContainer()->get('router');
         $tested_classes = [
             'CategoryTreeAdminList',
             'CategoryTreeAdminOptionList',
             'CategoryTreeFrontPage'
         ];
-
-        foreach ($tested_classes as $class)
+        foreach($tested_classes as $class)
         {
             $name = 'mocked'.$class;
             $this->$name = $this->getMockBuilder('App\Utils\\'.$class)
                 ->disableOriginalConstructor()
                 ->setMethods() // if no, all methods return null unless mocked
                 ->getMock();
-
-            $this->$name->urlGenerator = $urlGenerator;
+            $this->$name->urlgenerator = $urlgenerator;
         }
 
     }
@@ -49,8 +46,6 @@ class CategoryTest extends KernelTestCase
 
     /**
      * @dataProvider dataForCategoryTreeAdminOptionList
-     * @param $arrayToCompare
-     * @param $arrayFromDb
      */
     public function testCategoryTreeAdminOptionList($arrayToCompare, $arrayFromDb)
     {
@@ -61,8 +56,6 @@ class CategoryTest extends KernelTestCase
 
     /**
      * @dataProvider dataForCategoryTreeAdminList
-     * @param $string
-     * @param $array
      */
     public function testCategoryTreeAdminList($string, $array)
     {
@@ -70,6 +63,7 @@ class CategoryTest extends KernelTestCase
         $array = $this->mockedCategoryTreeAdminList->buildTree();
         $this->assertSame($string, $this->mockedCategoryTreeAdminList->getCategoryList($array));
     }
+
 
     public function dataForCategoryTreeFrontPage()
     {
@@ -123,16 +117,16 @@ class CategoryTest extends KernelTestCase
     {
         yield [
             [
-                ['name' => 'Electronics', 'id' => 1],
-                ['name' => '--Computers', 'id' => 6],
-                ['name' => '----Laptops', 'id' => 8],
-                ['name' => '------HP', 'id' => 14],
+                ['name'=>'Electronics','id'=>1],
+                ['name'=>'--Computers','id'=>6],
+                ['name'=>'----Laptops','id'=>8],
+                ['name'=>'------HP','id'=>14]
             ],
             [
-                ['name' => 'Electronics', 'id' => 1, 'parent_id' => null],
-                ['name' => 'Computers', 'id' => 6, 'parent_id' => 1],
-                ['name' => 'Laptops', 'id' => 8, 'parent_id' => 6],
-                ['name' => 'HP', 'id' => 14, 'parent_id' => 8],
+                ['name'=>'Electronics','id'=>1, 'parent_id'=>null],
+                ['name'=>'Computers','id'=>6, 'parent_id'=>1],
+                ['name'=>'Laptops','id'=>8, 'parent_id'=>6],
+                ['name'=>'HP','id'=>14, 'parent_id'=>8]
             ]
         ];
     }
@@ -140,12 +134,12 @@ class CategoryTest extends KernelTestCase
     public function dataForCategoryTreeAdminList()
     {
         yield [
-            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/2">Delete</a></li></ul>',
+            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/su/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/2">Delete</a></li></ul>',
             [ ['id'=>2,'parent_id'=>null,'name'=>'Toys'] ]
         ];
 
         yield [
-            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/2">Delete</a></li><li><i class="fa-li fa fa-arrow-right"></i>  Movies<a href="/admin/edit-category/3"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/3">Delete</a></li></ul>',
+            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/su/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/2">Delete</a></li><li><i class="fa-li fa fa-arrow-right"></i>  Movies<a href="/admin/su/edit-category/3"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/3">Delete</a></li></ul>',
             [
                 ['id'=>2,'parent_id'=>null,'name'=>'Toys'],
                 ['id'=>3,'parent_id'=>null,'name'=>'Movies']
@@ -153,7 +147,7 @@ class CategoryTest extends KernelTestCase
         ];
 
         yield [
-            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/2">Delete</a></li><li><i class="fa-li fa fa-arrow-right"></i>  Movies<a href="/admin/edit-category/3"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/3">Delete</a><ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Horrors<a href="/admin/edit-category/4"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/4">Delete</a><ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Not so scary<a href="/admin/edit-category/5"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/delete-category/5">Delete</a></li></ul></li></ul></li></ul>',
+            '<ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Toys<a href="/admin/su/edit-category/2"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/2">Delete</a></li><li><i class="fa-li fa fa-arrow-right"></i>  Movies<a href="/admin/su/edit-category/3"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/3">Delete</a><ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Horrors<a href="/admin/su/edit-category/4"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/4">Delete</a><ul class="fa-ul text-left"><li><i class="fa-li fa fa-arrow-right"></i>  Not so scary<a href="/admin/su/edit-category/5"> Edit</a> <a onclick="return confirm(\'Are you sure?\');" href="/admin/su/delete-category/5">Delete</a></li></ul></li></ul></li></ul>',
 
             [
                 ['id'=>2,'parent_id'=>null,'name'=>'Toys'],
