@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Video;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -54,6 +55,22 @@ class VideoRepository extends ServiceEntityRepository
     private function prepareQuery(string $query): array
     {
         return explode(' ', $query);
+    }
+
+    public function videoDetails($id)
+    {
+        try {
+            return $this->createQueryBuilder('v')
+                ->leftJoin('v.comments', 'c')
+                ->leftJoin('c.user', 'u')
+                ->addSelect('c', 'u')
+                ->where('v.id = :id')
+                ->setParameter('id', $id)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return new \Exception('fail');
+        }
     }
 
     // /**

@@ -66,9 +66,23 @@ class User implements UserInterface
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="usersThatLike")
+     * @ORM\JoinTable(name="likes")
+     */
+    private $likedVideos;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Video::class, mappedBy="usersThatDontLike")
+     * @ORM\JoinTable(name="dislikes")
+     */
+    private $dislikedVideos;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likedVideos = new ArrayCollection();
+        $this->dislikedVideos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -211,6 +225,62 @@ class User implements UserInterface
             if ($comment->getUser() === $this) {
                 $comment->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getLikedVideos(): Collection
+    {
+        return $this->likedVideos;
+    }
+
+    public function addLikedVideo(Video $likedVideo): self
+    {
+        if (!$this->likedVideos->contains($likedVideo)) {
+            $this->likedVideos[] = $likedVideo;
+            $likedVideo->addUsersThatLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedVideo(Video $likedVideo): self
+    {
+        if ($this->likedVideos->contains($likedVideo)) {
+            $this->likedVideos->removeElement($likedVideo);
+            $likedVideo->removeUsersThatLike($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getDislikedVideos(): Collection
+    {
+        return $this->dislikedVideos;
+    }
+
+    public function addDislikedVideo(Video $dislikedVideo): self
+    {
+        if (!$this->dislikedVideos->contains($dislikedVideo)) {
+            $this->dislikedVideos[] = $dislikedVideo;
+            $dislikedVideo->addUsersThatDontLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDislikedVideo(Video $dislikedVideo): self
+    {
+        if ($this->dislikedVideos->contains($dislikedVideo)) {
+            $this->dislikedVideos->removeElement($dislikedVideo);
+            $dislikedVideo->removeUsersThatDontLike($this);
         }
 
         return $this;

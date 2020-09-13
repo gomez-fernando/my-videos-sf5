@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block main %}
+  {% block customstylesheets %}
+      {{ parent() }}
+      {% if app.user %}
+          <link rel="stylesheet" href="{{asset('assets/css/likes.css') }}">
+      {% endif %}
+  {% endblock %}
 
+{% block main %}
     <section class="jumbotron text-center">
         <div class="container">
 
@@ -59,3 +65,10 @@
 </main>
 
 {% endblock %}
+
+  {% block customjavascripts %}
+      {{ parent() }}
+      {% if app.user %}
+          <script src="{{ asset('assets/js/likes.js') }}"></script>
+      {% endif %}
+  {% endblock %}

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Video;
+use App\Repository\VideoRepository;
 use App\Utils\CategoryTreeFrontPage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,10 +49,16 @@ class FrontController extends AbstractController
 
     /**
      * @Route("/video-details/{video}", name="video_details")
+     * @param $video
+     * @param VideoRepository $repo
+     * @return Response
      */
-    public function videoDetails($video)
+    public function videoDetails(Video $video, VideoRepository $repo)
     {
-        return $this->render('front/video_details.html.twig');
+//        dump($repo->videoDetails($video));
+        return $this->render('front/video_details.html.twig', [
+            'video' => $repo->videoDetails($video)
+        ]);
     }
 
     /**
@@ -156,6 +164,107 @@ class FrontController extends AbstractController
     public function payment()
     {
         return $this->render('front/payment.html.twig');
+    }
+
+    /**
+     * @Route("/new-comment/{video}", methods={"POST"}, name="new_comment")
+     * @param Video $video
+     * @param Request $request
+     */
+    public function newComment(Video $video, Request $request)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        if(!empty(trim($request->request->get('comment'))))
+        {
+            $comment = new Comment();
+            $comment->setContent($request->request->get('comment'));
+            $comment->setUser($this->getUser());
+            $comment->setVideo($video);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('video_details', [
+            'video' => $video->getId()
+        ]);
+    }
+
+    /**
+     * @Route("video-list/{video}/like", name="like_video", methods={"POST"})
+     * @Route("video-list/{video}/dislike", name="dislike_video", methods={"POST"})
+     * @Route("video-list/{video}/unlike", name="undo_like_video", methods={"POST"})
+     * @Route("video-list/{video}/undodislike", name="undo_dislike_video", methods={"POST"})
+     */
+    public function toggleLikesAjax(Video $video, Request $request)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
+        switch ($request->get('_route'))
+        {
+            case 'like_video':
+                $result = $this->likeVideo($video);
+                break;
+            case 'dislike_video':
+                $result = $this->dislikeVideo($video);
+                break;
+            case 'undo_like_video':
+                $result = $this->undoLikeVideo($video);
+                break;
+            case 'undo_dislike_video':
+                $result = $this->undoDislikeVideo($video);
+                break;
+        }
+        return $this->json(['action' => $result, 'id' => $video->getId()]);
+    }
+
+    public function likeVideo($video)
+    {
+        $user = $this->getUser();
+        $user->addLikedVideo($video);
+        $em =$this->getDoctrine()->getManager();
+
+        $em->persist($user);
+        $em->flush();
+
+        return 'liked';
+    }
+
+    public function dislikeVideo($video)
+    {
+        $user = $this->getUser();
+        $user->addDislikedVideo($video);
+        $em =$this->getDoctrine()->getManager();
+
+        $em->persist($user);
+        $em->flush();
+
+        return 'disliked';
+    }
+
+    public function undoLikeVideo($video)
+    {
+        $user = $this->getUser();
+        $user->removeLikedVideo($video);
+        $em =$this->getDoctrine()->getManager();
+
+        $em->persist($user);
+        $em->flush();
+
+        return 'undo liked';
+    }
+
+    public function undoDislikeVideo($video)
+    {
+        $user = $this->getUser();
+        $user->removeDislikedVideo($video);
+        $em =$this->getDoctrine()->getManager();
+
+        $em->persist($user);
+        $em->flush();
+
+        return 'undo disliked';
     }
 
     public function mainCategories()

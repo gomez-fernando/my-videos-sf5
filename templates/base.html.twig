@@ -16,7 +16,7 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
-    {% block stylesheets %}
+    {% block customstylesheets %}
         <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
     {% endblock %}
 
@@ -105,6 +105,6 @@
     })
 </script>
 
-{% block javascripts %}{% endblock %}
+{% block customjavascripts %}{% endblock %}
 </body>
 </html>
