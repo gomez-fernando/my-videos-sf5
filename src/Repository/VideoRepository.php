@@ -22,19 +22,36 @@ class VideoRepository extends ServiceEntityRepository
 
     public function findByChildIds(array $value, ?string $sort_method)
     {
-        $sort_method = $sort_method != 'rating' ? $sort_method : 'ASC';
-        $dbquery = $this->createQueryBuilder('v')
-            ->andWhere('v.category IN (:val)')
-            ->setParameter('val', $value)
-            ->orderBy('v.title', $sort_method)
-            ->getQuery();
+        if($sort_method != 'rating')
+        {
+            $dbquery = $this->createQueryBuilder('v')
+                ->andWhere('v.category IN (:val)')
+                ->leftJoin('v.comments', 'c')
+//                ->addSelect('c')
+                ->leftJoin('v.usersThatLike', 'l')
+                ->leftJoin('v.usersThatDontLike', 'd')
+                ->addSelect('c', 'l', 'd')
+                ->setParameter('val', $value)
+                ->orderBy('v.title', $sort_method)
+                ->getQuery();
+        }
+        else
+        {
+            $dbquery = $this->createQueryBuilder('v')
+                ->addSelect('COUNT(l) AS HIDDEN likes')
+                ->leftJoin('v.usersThatLike', 'l')
+                ->andWhere('v.category IN (:val)')
+                ->setParameter('val', $value)
+                ->groupBy('v')
+                ->orderBy('likes', 'DESC')
+                ->getQuery();
+        }
+
         return $dbquery->getResult();
     }
 
     public function findByTitle(string $query, ?string $sort_method)
     {
-        $sort_method = $sort_method != 'rating' ? $sort_method : 'ASC';
-
         $queryBuilder = $this->createQueryBuilder('v');
         $searchTerms = $this->prepareQuery($query);
 
@@ -45,16 +62,38 @@ class VideoRepository extends ServiceEntityRepository
                 ->setParameter('t_'.$key, '%'.trim($term).'%');
         }
 
-        $dbquery = $queryBuilder
-            ->orderBy('v.title', $sort_method)
-            ->getQuery();
+        if($sort_method != 'rating')
+        {
+            $dbquery = $queryBuilder
+                ->orderBy('v.title', $sort_method)
+                ->leftJoin('v.comments', 'c')
+                ->leftJoin('v.usersThatLike', 'l')
+                ->leftJoin('v.usersThatDontLike', 'd')
+                ->addSelect('c', 'l', 'd')
+                ->getQuery();
+        }
+        else
+        {
+            $dbquery = $queryBuilder
+                ->addSelect('COUNT(l) AS HIDDEN likes', 'c')
+                ->leftJoin('v.usersThatLike', 'l')
+                ->leftJoin('v.comments', 'c')
+                ->groupBy('v', 'c')
+                ->orderBy('likes', 'DESC')
+                ->getQuery();
+        }
+
+
 
         return $dbquery->getResult();
     }
 
     private function prepareQuery(string $query): array
     {
-        return explode(' ', $query);
+        $terms = array_unique(explode(' ', $query));
+        return array_filter($terms, function ($term){
+            return 2 <= mb_strlen($term);
+        });
     }
 
     public function videoDetails($id)

@@ -1,5 +1,5 @@
 {% extends 'admin/base.html.twig' %}
-{% block stylesheets %}
+{% block customstylesheets %}
     {{ parent() }}
 
     <style>
@@ -21,7 +21,7 @@
         <br>
 	    <label for="inlineFormCustomSelect">Parent:</label>
         <select name="category[parent]" class="custom-select mr-sm-2" id="inlineFormCustomSelect">
-            {{ render(controller('App\\Controller\\AdminController::getAllCategories')) }}
+            {{ render(controller('App\\Controller\\Admin\\AdminController::getAllCategories')) }}
         </select>
         <div class="invalid-feedback">
             {{ form_errors(form.name) }}
