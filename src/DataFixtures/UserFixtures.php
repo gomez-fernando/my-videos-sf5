@@ -43,7 +43,8 @@ class UserFixtures extends Fixture
         return [
             ['John', 'Malkovich', 'jm@symf5.loc', '12', 'dsLWELdsm', ['ROLE_ADMIN']],
             ['Alex', 'Ramstehd', 'ar@symf5.loc', '12', 'dsLWELdsm', ['ROLE_ADMIN']],
-            ['Mika', 'Goldben', 'mg@symf5.loc', '12', 'dsLWELdsm', ['ROLE_USER']]
+            ['Mika', 'Goldben', 'mg@symf5.loc', '12', 'dsLWELdsm', ['ROLE_USER']],
+            ['Ted', 'Bundy', 'tb@symf5.loc', '12', 'dsLWELdsm', ['ROLE_USER']]
         ];
     }
 }
