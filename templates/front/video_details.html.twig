@@ -1,4 +1,11 @@
 {% extends 'base.html.twig' %}
+
+{% if video_no_members is not null %}
+    {% set videoid = 'https://player.vimeo.com/video' ~ video_no_members %}
+{% else %}
+    {% set videoid = video.vimeoId %}
+{% endif %}
+
 {% block main %}
 <br>
 <h1>{{ video.title }}</h1>
