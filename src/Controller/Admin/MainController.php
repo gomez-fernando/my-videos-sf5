@@ -24,7 +24,13 @@ class MainController extends AbstractController
      */
     public function index()
     {
-        return $this->render('admin/my_profile.html.twig');
+      $subscription = $this->getUser()->getSubscription();
+//      dd($this->getUser());
+//      dd($subscription);
+
+      return $this->render('admin/my_profile.html.twig', [
+            'subscription' => $subscription
+        ]);
     }
 
     /**

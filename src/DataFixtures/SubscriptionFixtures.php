@@ -33,8 +33,8 @@ class SubscriptionFixtures extends Fixture
     {
         return [
             [1, Subscription::getPlanDataNameByIndex(2), (new \DateTime())->modify('+100 hour'), 'paid', false],
-            [1, Subscription::getPlanDataNameByIndex(2), (new \DateTime())->modify('+100 year'), 'paid', false],
-            [1, Subscription::getPlanDataNameByIndex(2), (new \DateTime())->modify('+100 year'), 'paid', false],
+            [1, Subscription::getPlanDataNameByIndex(0), (new \DateTime())->modify('+100 year'), 'paid', false],
+            [1, Subscription::getPlanDataNameByIndex(1), (new \DateTime())->modify('+100 year'), 'paid', false],
         ];
     }
 }
