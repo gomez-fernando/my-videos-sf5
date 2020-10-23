@@ -1,4 +1,9 @@
 <?php
+/*
+|--------------------------------------------------------
+| copyright netprogs.pl | available only at Udemy.com | further distribution is prohibited  ***
+|--------------------------------------------------------
+*/
 namespace App\Controller\Admin;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,49 +24,66 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class MainController extends AbstractController
 {
-    /**
-     * @Route("/", name="admin_main_page")
-     */
-    public function index()
-    {
-      $subscription = $this->getUser()->getSubscription();
-//      dd($this->getUser());
-//      dd($subscription);
+  /**
+   * @Route("/", name="admin_main_page")
+   */
+  public function index()
+  {
+//    dd($this->getUser()->getSubscription());
+    return $this->render('admin/my_profile.html.twig', [
+        'subscription' => $this->getUser()->getSubscription()
+    ]);
+  }
 
-      return $this->render('admin/my_profile.html.twig', [
-            'subscription' => $subscription
-        ]);
+  /**
+   * @Route("/cancel-plan", name="cancel_plan")
+   */
+  public function cancelPlan()
+  {
+    $user = $this->getDoctrine()->getRepository(User::class)->find($this->getUser());
+
+    $subscription = $user->getSubscription();
+    $subscription->setValidTo(new \Datetime());
+    $subscription->setPaymentStatus(null);
+    $subscription->setPlan('canceled');
+
+    $entityManager = $this->getDoctrine()->getManager();
+    $entityManager->persist($user);
+    $entityManager->persist($subscription);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('admin_main_page');
+  }
+
+  /**
+   * @Route("/videos", name="videos")
+   */
+  public function videos()
+  {
+
+    if ($this->isGranted('ROLE_ADMIN'))
+    {
+      $videos = $this->getDoctrine()->getRepository(Video::class)->findAll();
+    }
+    else
+    {
+      $videos = $this->getUser()->getLikedVideos();
     }
 
-    /**
-     * @Route("/videos", name="videos")
-     */
-    public function videos()
-    {
-
-        if ($this->isGranted('ROLE_ADMIN'))
-        {
-            $videos = $this->getDoctrine()->getRepository(Video::class)->findAll();
-        }
-        else
-        {
-            $videos = $this->getUser()->getLikedVideos();
-        }
-
-        return $this->render('admin/videos.html.twig',[
-            'videos'=>$videos
-        ]);
-    }
+    return $this->render('admin/videos.html.twig',[
+        'videos'=>$videos
+    ]);
+  }
 
 
 
-    public function getAllCategories(CategoryTreeAdminOptionList $categories, $editedCategory = null)
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+  public function getAllCategories(CategoryTreeAdminOptionList $categories, $editedCategory = null)
+  {
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $categories->getCategoryList($categories->buildTree());
-        return $this->render('admin/_all_categories.html.twig',['categories'=>$categories,'editedCategory'=>$editedCategory]);
-    }
+    $categories->getCategoryList($categories->buildTree());
+    return $this->render('admin/_all_categories.html.twig',['categories'=>$categories,'editedCategory'=>$editedCategory]);
+  }
 
 
 }
